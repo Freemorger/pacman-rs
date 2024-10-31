@@ -1,0 +1,8 @@
+[package]
+name = "pacman-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ggez = "0.9.3"
+glam = "0.29.1"
