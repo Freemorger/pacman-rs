@@ -3,9 +3,9 @@ pub mod widgets {
     use std::path::PathBuf;
 
     pub struct Player {
-        texture_path: PathBuf,
-        pos: Point2<f32>,
-        points: i32,
+        pub texture_path: PathBuf,
+        pub pos: Point2<f32>,
+        pub points: i32,
     }
 
     impl Player {

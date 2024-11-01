@@ -1,16 +1,17 @@
-use blocks::widgets::Player;
 use ggez::event::{self, EventHandler, EventLoop};
 use ggez::filesystem::resources_dir;
 use ggez::graphics::{self, set_window_title, Color, DrawParam};
 use ggez::graphics::{GraphicsContext, Image};
+use ggez::input::keyboard::{self, KeyCode, KeyInput, KeyMods};
 use ggez::mint::Point2;
 use ggez::{Context, ContextBuilder, GameResult};
 use glam;
 use std::path::PathBuf;
 use std::{env, fs};
 mod blocks;
+use blocks::widgets::Player;
 
-const VERSION: &str = "v0.2";
+const VERSION: &str = "v0.3";
 const AUTHOR: &str = "freemorger";
 
 fn main() {
@@ -67,26 +68,64 @@ impl Game {
             player: player,
         }
     }
+
+    /*
+    fn checkMoves(&mut self, ctx: &mut Context) -> (&mut Self, &mut Context) {
+        let k_ctx = &ctx.keyboard;
+        if k_ctx.is_key_pressed(KeyCode::Up) {
+            self.player.pos.x += 2.0;
+        }
+        if k_ctx.is_key_pressed(KeyCode::Down) {
+            self.player.pos.x -= 2.0;
+        }
+        if k_ctx.is_key_pressed(KeyCode::Left) {
+            self.player.pos.y -= 2.0;
+        }
+        if k_ctx.is_key_pressed(KeyCode::Right) {
+            self.player.pos.y += 2.0;
+        }
+        if k_ctx.is_key_just_released(KeyCode::Q) {
+            println!("{}, {}", self.player.pos.x, self.player.pos.y);
+        }
+
+        (self, ctx)
+    }
+    */
 }
 
 impl EventHandler for Game {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult {
+    fn update(&mut self, ctx: &mut Context) -> GameResult {
+        let k_ctx = &ctx.keyboard;
+        if k_ctx.is_key_pressed(KeyCode::Up) {
+            self.player.pos.y += 2.0;
+        }
+        if k_ctx.is_key_pressed(KeyCode::Down) {
+            self.player.pos.y -= 2.0;
+        }
+        if k_ctx.is_key_pressed(KeyCode::Left) {
+            self.player.pos.x -= 2.0;
+        }
+        if k_ctx.is_key_pressed(KeyCode::Right) {
+            self.player.pos.x += 2.0;
+        }
+        if k_ctx.is_key_just_released(KeyCode::Q) {
+            println!("{}, {}", self.player.pos.x, self.player.pos.y);
+        }
         Ok(())
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let mut canvas = graphics::Canvas::from_frame(ctx, Color::BLACK);
-
         let curdir = env::current_dir().unwrap();
 
         //let mut testimage = graphics::Image::from_path(ctx, self.imgpaths[0].clone()).unwrap();
-        let mut testimage =
-            graphics::Image::from_path(ctx, curdir.join("/img/pacman.png")).unwrap();
+        let mut playerimg =
+            graphics::Image::from_path(ctx, curdir.join("/img/pacman.png")).unwrap(); // self.player.texture_path.clone()
         let test_dest: Point2<f32> = Point2 {
-            x: (55.0),
-            y: (44.0),
+            x: (self.player.pos.x.clone()),
+            y: (self.player.pos.y.clone()),
         }; // some cords
-        canvas.draw(&testimage, DrawParam::new().dest(test_dest));
+        canvas.draw(&playerimg, DrawParam::new().dest(test_dest));
 
         canvas.finish(ctx)
     }
